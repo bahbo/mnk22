@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>model &mdash; File Manager 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> File Manager
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Requirements and installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../used%20tech.html">Modules and libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Structure</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">File Manager</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">messagebox</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">pwd</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">cpuinfo</span>
+<span class="kn">import</span> <span class="nn">psutil</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+
+<div class="viewcode-block" id="FileManagerModel"><a class="viewcode-back" href="../model.html#model.FileManagerModel">[docs]</a><span class="k">class</span> <span class="nc">FileManagerModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sys_info</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permission_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">S_IRUSR</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">S_IWUSR</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">S_IXUSR</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">S_IRGRP</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">S_IWGRP</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">S_IXGRP</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">S_IROTH</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">S_IWOTH</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">.</span><span class="n">S_IXOTH</span><span class="p">,</span>
+        <span class="p">]</span>
+
+<div class="viewcode-block" id="FileManagerModel.get_size"><a class="viewcode-back" href="../model.html#model.FileManagerModel.get_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scale bytes to its proper format&quot;&quot;&quot;</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="mi">1024</span>
+        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">bytes_</span> <span class="o">&lt;</span> <span class="n">factor</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bytes_</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}{</span><span class="n">unit</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">bytes_</span> <span class="o">/=</span> <span class="n">factor</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.open_dir"><a class="viewcode-back" href="../model.html#model.FileManagerModel.open_dir">[docs]</a>    <span class="k">def</span> <span class="nf">open_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes a list of entries in certain directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: directory path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dirs&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;files&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;broken links&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">!=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">):</span>
+            <span class="n">up_dir</span> <span class="o">=</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;/..&quot;</span><span class="p">,</span> <span class="s2">&quot;UP--DIR&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">[</span><span class="s2">&quot;dirs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">up_dir</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+
+            <span class="c1"># add broken links</span>
+            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">is_symlink</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="n">item</span><span class="p">)):</span>
+                <span class="n">info</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">[</span><span class="s2">&quot;broken links&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">info</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_size</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">),</span>
+                    <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b </span><span class="si">%d</span><span class="s2"> %-H:%M&quot;</span><span class="p">),</span>
+                    <span class="n">stat</span><span class="o">.</span><span class="n">filemode</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mode</span><span class="p">),</span>
+                    <span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">owner</span><span class="p">(),</span>
+                    <span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(),</span>
+                <span class="p">]</span>
+                <span class="c1"># add dirs</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                    <span class="n">info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">[</span><span class="s2">&quot;dirs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+                <span class="c1"># add files</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerModel.item_selection"><a class="viewcode-back" href="../model.html#model.FileManagerModel.item_selection">[docs]</a>    <span class="k">def</span> <span class="nf">item_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tv</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Depending on path (file or folder): open document or displays directory content.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tv: active panel</span>
+<span class="sd">            path: file or dir path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s2">&quot;xdg-open&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">is_symlink</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="n">path</span><span class="p">)):</span>
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;path </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is a broken symlink&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dir_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_dir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">PermissionError</span> <span class="k">as</span> <span class="n">pe</span><span class="p">:</span>
+                <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">pe</span><span class="o">.</span><span class="n">strerror</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">tv</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
+                    <span class="n">tv</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">dir_items</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;dirs&quot;</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span> <span class="ow">or</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span><span class="p">:</span>
+                                <span class="n">tv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s2">&quot;cut_copy&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">tv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s2">&quot;dir&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span> <span class="ow">or</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span><span class="p">:</span>
+                                <span class="n">tv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s2">&quot;cut_copy&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">tv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+
+                <span class="n">tv</span><span class="o">.</span><span class="n">focus</span><span class="p">(</span><span class="n">tv</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">tv</span><span class="o">.</span><span class="n">selection_set</span><span class="p">(</span><span class="n">tv</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.close_user_window"><a class="viewcode-back" href="../model.html#model.FileManagerModel.close_user_window">[docs]</a>    <span class="k">def</span> <span class="nf">close_user_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the dialog screen and updates information panels.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">destroy_user_window</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_tv</span><span class="p">(</span><span class="n">view</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.update_tv"><a class="viewcode-back" href="../model.html#model.FileManagerModel.update_tv">[docs]</a>    <span class="k">def</span> <span class="nf">update_tv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates information panels.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_selection</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_selection</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerModel.rename"><a class="viewcode-back" href="../model.html#model.FileManagerModel.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rename a file or directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: object path</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">entry_text</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">entry_text</span>
+        <span class="n">base_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+        <span class="n">new_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">entry_text</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">new_name</span><span class="p">):</span>
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Already exists&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">view</span><span class="o">.</span><span class="n">u_window</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">new_name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">PermissionError</span> <span class="k">as</span> <span class="n">pe</span><span class="p">:</span>
+                <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">pe</span><span class="o">.</span><span class="n">strerror</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">view</span><span class="o">.</span><span class="n">u_window</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">new_name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">new_name</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_user_window</span><span class="p">(</span><span class="n">view</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerModel.delete_file_dir"><a class="viewcode-back" href="../model.html#model.FileManagerModel.delete_file_dir">[docs]</a>    <span class="k">def</span> <span class="nf">delete_file_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a file or directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            selection: object path</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">selection</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">selection</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/..&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">messagebox</span><span class="o">.</span><span class="n">askyesno</span><span class="p">(</span>
+                <span class="s2">&quot;Delete&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Are you sure you want to delete </span><span class="si">{</span><span class="n">selection</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">?&quot;</span>
+            <span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">PermissionError</span> <span class="k">as</span> <span class="n">pe</span><span class="p">:</span>
+                    <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">pe</span><span class="o">.</span><span class="n">strerror</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+                    <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+                    <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_tv</span><span class="p">(</span><span class="n">view</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerModel.copy_file_folder"><a class="viewcode-back" href="../model.html#model.FileManagerModel.copy_file_folder">[docs]</a>    <span class="k">def</span> <span class="nf">copy_file_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Marks file or directory ready to be copied.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            selection: object path</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">selection</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">selection</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/..&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span> <span class="o">=</span> <span class="n">path</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_tv</span><span class="p">(</span><span class="n">view</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.cut_file_folder"><a class="viewcode-back" href="../model.html#model.FileManagerModel.cut_file_folder">[docs]</a>    <span class="k">def</span> <span class="nf">cut_file_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Marks file or directory ready to be moved.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            selection: object path</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">selection</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">selection</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/..&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span> <span class="o">=</span> <span class="n">path</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_tv</span><span class="p">(</span><span class="n">view</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.paste_copied_object"><a class="viewcode-back" href="../model.html#model.FileManagerModel.paste_copied_object">[docs]</a>    <span class="k">def</span> <span class="nf">paste_copied_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes copy of file or directory in selected location.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            location: destination path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">new_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">new_path</span><span class="p">)):</span>
+            <span class="n">question</span> <span class="o">=</span> <span class="n">messagebox</span><span class="o">.</span><span class="n">askquestion</span><span class="p">(</span>
+                <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Path already exists./nDo you want to replace it?&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">question</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span>
+                <span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerModel.paste_cut_object"><a class="viewcode-back" href="../model.html#model.FileManagerModel.paste_cut_object">[docs]</a>    <span class="k">def</span> <span class="nf">paste_cut_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Moves file or directory in selected location.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            location: destination path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">new_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">new_path</span><span class="p">)):</span>
+            <span class="n">question</span> <span class="o">=</span> <span class="n">messagebox</span><span class="o">.</span><span class="n">askquestion</span><span class="p">(</span>
+                <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Path already exists./nDo you want to replace it?&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">question</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerModel.paste"><a class="viewcode-back" href="../model.html#model.FileManagerModel.paste">[docs]</a>    <span class="k">def</span> <span class="nf">paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tv_list</span><span class="p">,</span> <span class="n">tree_paths</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Moves/makes copy of file or directory in selected location.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tv_list: active panel</span>
+<span class="sd">            tree_paths: current directory in the active panel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">tree_paths</span><span class="p">[</span><span class="n">tv_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">paste_copied_object</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">paste_cut_object</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">PermissionError</span> <span class="k">as</span> <span class="n">pe</span><span class="p">:</span>
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">pe</span><span class="o">.</span><span class="n">strerror</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span><span class="p">)</span> <span class="ow">in</span> <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">location</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span><span class="p">)</span> <span class="ow">in</span> <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">location</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copied_object</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cut_object</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_tv</span><span class="p">(</span><span class="n">view</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.get_obj_perm"><a class="viewcode-back" href="../model.html#model.FileManagerModel.get_obj_perm">[docs]</a>    <span class="k">def</span> <span class="nf">get_obj_perm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">perm</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get current permissions for file or folder.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: file or directory path.</span>
+<span class="sd">            perm: list of permissions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">perm</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">permission_keys</span><span class="p">[</span><span class="n">x</span><span class="p">]):</span>
+                <span class="n">perm</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerModel.set_obj_perm"><a class="viewcode-back" href="../model.html#model.FileManagerModel.set_obj_perm">[docs]</a>    <span class="k">def</span> <span class="nf">set_obj_perm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">perm</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set permissions for file or folder.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: file or directory path.</span>
+<span class="sd">            perm: list of permissions</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_perm</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">perm</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">perm</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">new_perm</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permission_keys</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">new_perm</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close_user_window</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">PermissionError</span> <span class="k">as</span> <span class="n">pe</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close_user_window</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">pe</span><span class="o">.</span><span class="n">strerror</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerModel.get_groups"><a class="viewcode-back" href="../model.html#model.FileManagerModel.get_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of user groups.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/etc/group&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.get_users"><a class="viewcode-back" href="../model.html#model.FileManagerModel.get_users">[docs]</a>    <span class="k">def</span> <span class="nf">get_users</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of users.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pwd</span><span class="o">.</span><span class="n">getpwall</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.obj_chown"><a class="viewcode-back" href="../model.html#model.FileManagerModel.obj_chown">[docs]</a>    <span class="k">def</span> <span class="nf">obj_chown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Changes ownership of file or directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: file or directory path.</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">users_var</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">groups_var</span>
+        <span class="n">c_user</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">owner</span><span class="p">()</span>
+        <span class="n">c_group</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c_user</span> <span class="o">==</span> <span class="n">users</span> <span class="ow">and</span> <span class="n">c_group</span> <span class="o">!=</span> <span class="n">groups</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">chown</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">c_user</span> <span class="o">!=</span> <span class="n">users</span> <span class="ow">and</span> <span class="n">c_group</span> <span class="o">==</span> <span class="n">groups</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">chown</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">users</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">c_user</span> <span class="o">!=</span> <span class="n">users</span> <span class="ow">and</span> <span class="n">c_group</span> <span class="o">!=</span> <span class="n">groups</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">chown</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">users</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">group</span><span class="o">=</span><span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close_user_window</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">PermissionError</span> <span class="k">as</span> <span class="n">pe</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close_user_window</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">pe</span><span class="o">.</span><span class="n">strerror</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerModel.rec_split"><a class="viewcode-back" href="../model.html#model.FileManagerModel.rec_split">[docs]</a>    <span class="k">def</span> <span class="nf">rec_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shorten file or directory path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: file or directory path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">short_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">short_path</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">short_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">short_path</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.search_alg"><a class="viewcode-back" href="../model.html#model.FileManagerModel.search_alg">[docs]</a>    <span class="k">def</span> <span class="nf">search_alg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_dir</span><span class="p">,</span> <span class="n">tv_list</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">destroy_user_window</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes a list of search entries in certain directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            search_dir: directory to search in</span>
+<span class="sd">            tv_list: panel to display results</span>
+<span class="sd">            name: search entry</span>
+<span class="sd">            destroy_user_window: close dialog screen</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">tv</span> <span class="o">=</span> <span class="n">tv_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">tv</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+
+        <span class="n">tv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s2">&quot;dir&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">search_dir</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;/..&quot;</span><span class="p">,</span> <span class="s2">&quot;UP--DIR&quot;</span><span class="p">))</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">search_dir</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">dir_</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">dir_</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dir_</span><span class="p">))</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[</span>
+                <span class="n">item</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rec_split</span><span class="p">(</span><span class="n">item</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_size</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">),</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b </span><span class="si">%d</span><span class="s2"> %-H:%M&quot;</span><span class="p">),</span>
+                <span class="n">stat</span><span class="o">.</span><span class="n">filemode</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mode</span><span class="p">),</span>
+                <span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">owner</span><span class="p">(),</span>
+                <span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(),</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">results</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                <span class="n">tv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s2">&quot;dir&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="n">tv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+
+        <span class="n">destroy_user_window</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FileManagerModel.system_information"><a class="viewcode-back" href="../model.html#model.FileManagerModel.system_information">[docs]</a>    <span class="k">def</span> <span class="nf">system_information</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get system information.&quot;&quot;&quot;</span>
+        <span class="n">total</span><span class="p">,</span> <span class="n">used</span><span class="p">,</span> <span class="n">free</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">disk_usage</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+        <span class="n">uname</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">uname</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sys_info</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[</span><span class="s2">&quot;System: &quot;</span><span class="p">,</span> <span class="n">uname</span><span class="o">.</span><span class="n">system</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Current User: &quot;</span><span class="p">,</span> <span class="n">pwd</span><span class="o">.</span><span class="n">getpwuid</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getuid</span><span class="p">())[</span><span class="mi">0</span><span class="p">]],</span>
+            <span class="p">[</span><span class="s2">&quot;Node Name: &quot;</span><span class="p">,</span> <span class="n">uname</span><span class="o">.</span><span class="n">node</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Release: &quot;</span><span class="p">,</span> <span class="n">uname</span><span class="o">.</span><span class="n">release</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Version: &quot;</span><span class="p">,</span> <span class="n">uname</span><span class="o">.</span><span class="n">version</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Machine: &quot;</span><span class="p">,</span> <span class="n">uname</span><span class="o">.</span><span class="n">machine</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Processor: &quot;</span><span class="p">,</span> <span class="n">cpuinfo</span><span class="o">.</span><span class="n">get_cpu_info</span><span class="p">()[</span><span class="s2">&quot;brand_raw&quot;</span><span class="p">]],</span>
+            <span class="p">[</span><span class="s2">&quot;Physical cores: &quot;</span><span class="p">,</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)],</span>
+            <span class="p">[</span><span class="s2">&quot;Total cores: &quot;</span><span class="p">,</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">True</span><span class="p">)],</span>
+            <span class="p">[</span><span class="s2">&quot;Total memory: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_size</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span><span class="p">)],</span>
+            <span class="p">[</span><span class="s2">&quot;Total disk space: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_size</span><span class="p">(</span><span class="n">total</span><span class="p">)],</span>
+            <span class="p">[</span><span class="s2">&quot;Used disk space: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_size</span><span class="p">(</span><span class="n">used</span><span class="p">)],</span>
+            <span class="p">[</span><span class="s2">&quot;Free disk space: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_size</span><span class="p">(</span><span class="n">free</span><span class="p">)],</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sys_info</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Ivan Aleksandrov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

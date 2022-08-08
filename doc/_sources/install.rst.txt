@@ -1,0 +1,28 @@
+Requirements and installing
+----------------------------
+
+**Requirements:**
+
+-   Linux platform
+-   Python3
+
+	
+
+**Installing:**
+
+To use File Manager:
+
+- install requirements first using pip:
+
+.. code-block:: console
+
+    	$ sudo pip install -r requirements.txt
+   
+   
+    	
+- start File Manager:
+  
+.. code-block:: console
+
+    	$ sudo python3 main.py
+

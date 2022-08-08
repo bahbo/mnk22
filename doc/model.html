@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model module &mdash; File Manager 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="View module" href="view.html" />
+    <link rel="prev" title="Structure" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> File Manager
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of content:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Requirements and installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="used%20tech.html">Modules and libraries</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Structure</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view.html">View module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presenter.html">Presenter module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">File Manager</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">Structure</a> &raquo;</li>
+      <li>Model module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/model.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-model">
+<span id="model-module"></span><h1>Model module<a class="headerlink" href="#module-model" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="model.FileManagerModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model.</span></span><span class="sig-name descname"><span class="pre">FileManagerModel</span></span><a class="reference internal" href="_modules/model.html#FileManagerModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.close_user_window">
+<span class="sig-name descname"><span class="pre">close_user_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.close_user_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.close_user_window" title="Permalink to this definition"></a></dt>
+<dd><p>Closes the dialog screen and updates information panels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>view</strong> – class FileManagerView</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.copy_file_folder">
+<span class="sig-name descname"><span class="pre">copy_file_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.copy_file_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.copy_file_folder" title="Permalink to this definition"></a></dt>
+<dd><p>Marks file or directory ready to be copied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> – object path</p></li>
+<li><p><strong>view</strong> – class FileManagerView</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.cut_file_folder">
+<span class="sig-name descname"><span class="pre">cut_file_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.cut_file_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.cut_file_folder" title="Permalink to this definition"></a></dt>
+<dd><p>Marks file or directory ready to be moved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> – object path</p></li>
+<li><p><strong>view</strong> – class FileManagerView</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.delete_file_dir">
+<span class="sig-name descname"><span class="pre">delete_file_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.delete_file_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.delete_file_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Delete a file or directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> – object path</p></li>
+<li><p><strong>view</strong> – class FileManagerView</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.get_groups">
+<span class="sig-name descname"><span class="pre">get_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.get_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.get_groups" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of user groups.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.get_obj_perm">
+<span class="sig-name descname"><span class="pre">get_obj_perm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.get_obj_perm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.get_obj_perm" title="Permalink to this definition"></a></dt>
+<dd><p>Get current permissions for file or folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – file or directory path.</p></li>
+<li><p><strong>perm</strong> – list of permissions</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.get_size">
+<span class="sig-name descname"><span class="pre">get_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'B'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.get_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.get_size" title="Permalink to this definition"></a></dt>
+<dd><p>Scale bytes to its proper format</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.get_users">
+<span class="sig-name descname"><span class="pre">get_users</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.get_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.get_users" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of users.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.item_selection">
+<span class="sig-name descname"><span class="pre">item_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.item_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.item_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Depending on path (file or folder): open document or displays directory content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tv</strong> – active panel</p></li>
+<li><p><strong>path</strong> – file or dir path</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.obj_chown">
+<span class="sig-name descname"><span class="pre">obj_chown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.obj_chown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.obj_chown" title="Permalink to this definition"></a></dt>
+<dd><p>Changes ownership of file or directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – file or directory path.</p></li>
+<li><p><strong>view</strong> – class FileManagerView</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.open_dir">
+<span class="sig-name descname"><span class="pre">open_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.open_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.open_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Makes a list of entries in certain directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – directory path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.paste">
+<span class="sig-name descname"><span class="pre">paste</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tv_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tree_paths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.paste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.paste" title="Permalink to this definition"></a></dt>
+<dd><blockquote>
+<div><p>Moves/makes copy of file or directory in selected location.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tv_list</strong> – active panel</p></li>
+<li><p><strong>tree_paths</strong> – current directory in the active panel</p></li>
+<li><p><strong>view</strong> – class FileManagerView</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.paste_copied_object">
+<span class="sig-name descname"><span class="pre">paste_copied_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.paste_copied_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.paste_copied_object" title="Permalink to this definition"></a></dt>
+<dd><p>Makes copy of file or directory in selected location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>location</strong> – destination path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.paste_cut_object">
+<span class="sig-name descname"><span class="pre">paste_cut_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.paste_cut_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.paste_cut_object" title="Permalink to this definition"></a></dt>
+<dd><p>Moves file or directory in selected location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>location</strong> – destination path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.rec_split">
+<span class="sig-name descname"><span class="pre">rec_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.rec_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.rec_split" title="Permalink to this definition"></a></dt>
+<dd><p>Shorten file or directory path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – file or directory path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.rename" title="Permalink to this definition"></a></dt>
+<dd><p>Rename a file or directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – object path</p></li>
+<li><p><strong>view</strong> – class FileManagerView</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.search_alg">
+<span class="sig-name descname"><span class="pre">search_alg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tv_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destroy_user_window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.search_alg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.search_alg" title="Permalink to this definition"></a></dt>
+<dd><p>Makes a list of search entries in certain directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>search_dir</strong> – directory to search in</p></li>
+<li><p><strong>tv_list</strong> – panel to display results</p></li>
+<li><p><strong>name</strong> – search entry</p></li>
+<li><p><strong>destroy_user_window</strong> – close dialog screen</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.set_obj_perm">
+<span class="sig-name descname"><span class="pre">set_obj_perm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.set_obj_perm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.set_obj_perm" title="Permalink to this definition"></a></dt>
+<dd><p>Set permissions for file or folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – file or directory path.</p></li>
+<li><p><strong>perm</strong> – list of permissions</p></li>
+<li><p><strong>view</strong> – class FileManagerView</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.system_information">
+<span class="sig-name descname"><span class="pre">system_information</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.system_information"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.system_information" title="Permalink to this definition"></a></dt>
+<dd><p>Get system information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model.FileManagerModel.update_tv">
+<span class="sig-name descname"><span class="pre">update_tv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model.html#FileManagerModel.update_tv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#model.FileManagerModel.update_tv" title="Permalink to this definition"></a></dt>
+<dd><p>Updates information panels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>view</strong> – class FileManagerView</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="view.html" class="btn btn-neutral float-right" title="View module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Ivan Aleksandrov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

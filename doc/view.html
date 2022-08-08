@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View module &mdash; File Manager 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Presenter module" href="presenter.html" />
+    <link rel="prev" title="Model module" href="model.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> File Manager
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of content:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Requirements and installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="used%20tech.html">Modules and libraries</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Structure</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">View module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presenter.html">Presenter module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">File Manager</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">Structure</a> &raquo;</li>
+      <li>View module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/view.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-view">
+<span id="view-module"></span><h1>View module<a class="headerlink" href="#module-view" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="view.FileManagerView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">view.</span></span><span class="sig-name descname"><span class="pre">FileManagerView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#view.MainWindow" title="view.MainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">MainWindow</span></code></a></p>
+<p>Adds different dialog screens to the UI.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.accepted_characters">
+<span class="sig-name descname"><span class="pre">accepted_characters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">char</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.accepted_characters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.accepted_characters" title="Permalink to this definition"></a></dt>
+<dd><p>Validates char != ‘/’.
+Used as validatecommand in Entry widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>char</strong> – str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.add_buttons">
+<span class="sig-name descname"><span class="pre">add_buttons</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.add_buttons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.add_buttons" title="Permalink to this definition"></a></dt>
+<dd><p>Adds &lt;OK&gt; and &lt;Cancel&gt; buttons to the dialog screen.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.add_entry">
+<span class="sig-name descname"><span class="pre">add_entry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.add_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.add_entry" title="Permalink to this definition"></a></dt>
+<dd><p>Adds entry widget to the dialog screen.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.add_label">
+<span class="sig-name descname"><span class="pre">add_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.add_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.add_label" title="Permalink to this definition"></a></dt>
+<dd><p>Adds label widget to the dialog screen.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.chmod_window">
+<span class="sig-name descname"><span class="pre">chmod_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.chmod_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.chmod_window" title="Permalink to this definition"></a></dt>
+<dd><p>Displays dialog screen for changing file or directory permissions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.chown_window">
+<span class="sig-name descname"><span class="pre">chown_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.chown_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.chown_window" title="Permalink to this definition"></a></dt>
+<dd><p>Displays dialog screen for changing file or directory ownership.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.destroy_user_window">
+<span class="sig-name descname"><span class="pre">destroy_user_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.destroy_user_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.destroy_user_window" title="Permalink to this definition"></a></dt>
+<dd><p>Closes the dialog screen.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.info_screen">
+<span class="sig-name descname"><span class="pre">info_screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.info_screen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.info_screen" title="Permalink to this definition"></a></dt>
+<dd><p>Displays dialog screen with system information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.move_user_window">
+<span class="sig-name descname"><span class="pre">move_user_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.move_user_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.move_user_window" title="Permalink to this definition"></a></dt>
+<dd><p>Moves dialog screen with main window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.rename" title="Permalink to this definition"></a></dt>
+<dd><p>Displays dialog screen for renaming file or directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.search_window">
+<span class="sig-name descname"><span class="pre">search_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.search_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.search_window" title="Permalink to this definition"></a></dt>
+<dd><p>Displays dialog screen for searching.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.show_user_window">
+<span class="sig-name descname"><span class="pre">show_user_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.show_user_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.show_user_window" title="Permalink to this definition"></a></dt>
+<dd><p>Displays the dialog screen.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="view.FileManagerView.u_window_position">
+<span class="sig-name descname"><span class="pre">u_window_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#FileManagerView.u_window_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.FileManagerView.u_window_position" title="Permalink to this definition"></a></dt>
+<dd><p>Places the dialog screen in the center of main window.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="view.MainWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">view.</span></span><span class="sig-name descname"><span class="pre">MainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/view.html#MainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#view.MainWindow" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides the main interface. Defines the style and theme of the application.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="model.html" class="btn btn-neutral float-left" title="Model module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="presenter.html" class="btn btn-neutral float-right" title="Presenter module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Ivan Aleksandrov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

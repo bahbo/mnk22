@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>presenter &mdash; File Manager 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> File Manager
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of content:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Requirements and installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../used%20tech.html">Modules and libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Structure</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">File Manager</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>presenter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for presenter</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+
+<div class="viewcode-block" id="FileManagerPresenter"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter">[docs]</a><span class="k">class</span> <span class="nc">FileManagerPresenter</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_selection_tree_1</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_selection_tree_2</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span> <span class="o">=</span> <span class="p">{</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tv_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="p">]</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Configure&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">move_user_window</span><span class="p">())</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;Double-Button-1&gt;&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_selected_click</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">,</span> <span class="n">event</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;Double-Button-1&gt;&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_selected_click</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="p">,</span> <span class="n">event</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;Return&gt;&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_selected_enter</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;Return&gt;&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_selected_enter</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;FocusIn&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tv</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;FocusIn&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tv</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;&lt;TreeviewSelect&gt;&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;&lt;TreeviewSelect&gt;&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f1</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;F1&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f2</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;F2&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f3</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_refresh</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">model</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;F3&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_refresh</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">model</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Control-x&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_refresh</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">model</span><span class="p">))</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f4</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_refresh</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">model</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;F4&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_refresh</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">model</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Control-c&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_refresh</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">model</span><span class="p">))</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f5</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+            <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;F5&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;Control-v&gt;&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">,</span> <span class="n">view</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f6</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_permissions</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;F6&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_permissions</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f7</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_owner_group</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;F7&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_owner_group</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f8</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;F8&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f9</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tree_info</span><span class="p">(</span><span class="n">view</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;F9&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tree_info</span><span class="p">(</span><span class="n">view</span><span class="p">))</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f10</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+            <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">delete_file_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">),</span> <span class="n">view</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;F10&gt;&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">delete_file_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">),</span> <span class="n">view</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">f11</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">())</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;F11&gt;&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">())</span>
+
+<div class="viewcode-block" id="FileManagerPresenter.tv_list"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.tv_list">[docs]</a>    <span class="k">def</span> <span class="nf">tv_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of display panels. Sorts the list so the active panel is at first position.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">selection</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tv_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">selection</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tv_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tv_order</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.active_selection"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.active_selection">[docs]</a>    <span class="k">def</span> <span class="nf">active_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Displays current selection in each panel.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">selection</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">active_pos_left</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">selection</span><span class="p">())[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">focus</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">selection</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">active_pos_right</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">selection</span><span class="p">())[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">focus</span><span class="p">())</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.info"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show system information.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: class FileManagerModel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">info_screen</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">system_information</span><span class="p">()):</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">info_frame</span><span class="o">.</span><span class="n">grid_slaves</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">info_frame</span><span class="o">.</span><span class="n">grid_slaves</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">uw_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;System Information&quot;</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">u_window_position</span><span class="p">()</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.rename"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rename selected object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: class FileManagerModel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/..&quot;</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">rename</span><span class="p">()</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">uw_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Enter New Name:&quot;</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">entry_text</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="FileManagerPresenter.cut_refresh"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.cut_refresh">[docs]</a>    <span class="k">def</span> <span class="nf">cut_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates UI to show cut objects.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: class FileManagerModel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">cut_file_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">),</span> <span class="n">view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">view</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileManagerPresenter.copy_refresh"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.copy_refresh">[docs]</a>    <span class="k">def</span> <span class="nf">copy_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates UI to show copied objects.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: class FileManagerModel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">copy_file_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">),</span> <span class="n">view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">view</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileManagerPresenter.change_permissions"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.change_permissions">[docs]</a>    <span class="k">def</span> <span class="nf">change_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change objects permissions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: class FileManagerModel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/..&quot;</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">chmod_window</span><span class="p">()</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">uw_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;chmod: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">uf_perm</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">uw_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;chmod: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">get_obj_perm</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">permissions</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+                <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">set_obj_perm</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">permissions</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+            <span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.change_owner_group"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.change_owner_group">[docs]</a>    <span class="k">def</span> <span class="nf">change_owner_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change objects group or/and owner.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: class FileManagerModel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_selection</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/..&quot;</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">chown_window</span><span class="p">()</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">uw_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;chown: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">cb_groups</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">get_groups</span><span class="p">())</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">groups_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">cb_users</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">get_users</span><span class="p">())</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">users_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">owner</span><span class="p">())</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">obj_chown</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.search"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Search for file or folder.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: class FileManagerModel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">search_window</span><span class="p">()</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">uw_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Search in:&quot;</span><span class="p">)</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">cb_search_dir</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;current dir&quot;</span><span class="p">,</span> <span class="s2">&quot;home&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">])</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">cb_search_dir_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;current dir&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">view</span><span class="o">.</span><span class="n">cb_search_dir_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;current dir&quot;</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">view</span><span class="o">.</span><span class="n">cb_search_dir_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;home&quot;</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+            <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">search_alg</span><span class="p">(</span>
+                <span class="n">path</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">),</span>
+                <span class="n">view</span><span class="o">.</span><span class="n">entry_text</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                <span class="n">view</span><span class="o">.</span><span class="n">destroy_user_window</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.toggle_tree_info"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.toggle_tree_info">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_tree_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Changes active panel listing mode. /Standard, Full/</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tv_list</span><span class="p">(</span><span class="n">view</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">tv</span><span class="p">[</span><span class="s2">&quot;displaycolumns&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;#1&quot;</span><span class="p">,</span> <span class="s2">&quot;#2&quot;</span><span class="p">,</span> <span class="s2">&quot;#3&quot;</span><span class="p">):</span>
+            <span class="n">tv</span><span class="p">[</span><span class="s2">&quot;displaycolumns&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;#1&quot;</span><span class="p">,</span> <span class="s2">&quot;#2&quot;</span><span class="p">,</span> <span class="s2">&quot;#3&quot;</span><span class="p">,</span> <span class="s2">&quot;#4&quot;</span><span class="p">,</span> <span class="s2">&quot;#5&quot;</span><span class="p">,</span> <span class="s2">&quot;#6&quot;</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;#4&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Permissions&quot;</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;#5&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Owner&quot;</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;#6&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Group&quot;</span><span class="p">)</span>
+
+            <span class="n">tv</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#1&quot;</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#2&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">E</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#3&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#4&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#5&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">CENTER</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#6&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">CENTER</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ThemeChanged&gt;&gt;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tv</span><span class="p">[</span><span class="s2">&quot;displaycolumns&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;#1&quot;</span><span class="p">,</span> <span class="s2">&quot;#2&quot;</span><span class="p">,</span> <span class="s2">&quot;#3&quot;</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#1&quot;</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#2&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">E</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#3&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">event_generate</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;ThemeChanged&gt;&gt;&quot;</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.current_dir_path"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.current_dir_path">[docs]</a>    <span class="k">def</span> <span class="nf">current_dir_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">tv</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Displays current directory of each panel.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            view: view: class FileManagerView</span>
+<span class="sd">            tv: active panel</span>
+<span class="sd">            path: current directory path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">tv</span> <span class="o">==</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">[</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+                <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tree_paths</span><span class="p">[</span><span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+                <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.item_selected_click"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.item_selected_click">[docs]</a>    <span class="k">def</span> <span class="nf">item_selected_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">tree_view</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Selecting directory or opening a document with mouse click.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: class FileManagerModel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">            tree_view: active panel</span>
+<span class="sd">            event: mouse click</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">region</span> <span class="o">=</span> <span class="n">tree_view</span><span class="o">.</span><span class="n">identify</span><span class="p">(</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">region</span> <span class="o">==</span> <span class="s2">&quot;heading&quot;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">region</span> <span class="o">==</span> <span class="s2">&quot;cell&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">item_selected_enter</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">tree_view</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.item_selected_enter"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.item_selected_enter">[docs]</a>    <span class="k">def</span> <span class="nf">item_selected_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">tree_view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Selecting directory or opening a document.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: class FileManagerModel</span>
+<span class="sd">            view: class FileManagerView</span>
+<span class="sd">            tree_view: active panel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">selected_path</span> <span class="o">=</span> <span class="n">tree_view</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">tree_view</span><span class="o">.</span><span class="n">selection</span><span class="p">())[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">item_selection</span><span class="p">(</span><span class="n">tree_view</span><span class="p">,</span> <span class="n">selected_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_dir_path</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">tree_view</span><span class="p">,</span> <span class="n">selected_path</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="FileManagerPresenter.toggle_tv"><a class="viewcode-back" href="../presenter.html#presenter.FileManagerPresenter.toggle_tv">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_tv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tv</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Switch between panels: tree_left, tree_right.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tv</span> <span class="o">==</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_selection_tree_1</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">focus</span><span class="p">()</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">selection_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_selection_tree_1</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">selection_toggle</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">selection</span><span class="p">())</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;TLabelframe.Label&quot;</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;New.TLabelframe.Label&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_selection_tree_2</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">focus</span><span class="p">()</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">tree_right</span><span class="o">.</span><span class="n">selection_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_selection_tree_2</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">selection_toggle</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">tree_left</span><span class="o">.</span><span class="n">selection</span><span class="p">())</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">lf_topleft_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;TLabelframe.Label&quot;</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">lf_topright_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;New.TLabelframe.Label&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Ivan Aleksandrov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+Modules and libraries
+----------------------------
+
+*Listed below are the modules and libraries used in this application:*
+
+
+
+- Developing graphical user interface:
+   - `tkinter <https://docs.python.org/3/library/tkinter.html>`_ 
+
+- Pathname manipulations:
+   - `os <https://docs.python.org/3/library/os.html>`_
+   - `pathlib <https://docs.python.org/3/library/pathlib.html>`_
+
+- Directory and file operations:
+   - `os <https://docs.python.org/3/library/os.html>`_
+   - `shutil <https://docs.python.org/3/library/shutil.html>`_
+
+- Retrieving system information:
+   - `pwd <https://docs.python.org/3/library/pwd.html>`_
+   - `platform <https://docs.python.org/3/library/platform.html>`_
+   - `cpuinfo <https://pypi.org/project/py-cpuinfo/>`_
+   - `psutil <https://pypi.org/project/psutil/>`_
+
+- Invoking subprocesses:
+   - `subprocess <https://docs.python.org/3/library/subprocess.html>`_
+
+- Manipulating dates and times:
+   - `datetime <https://docs.python.org/3/library/datetime.html>`_
+
+-  interpreting the results of os.stat():
+    - `stat <https://docs.python.org/3/library/stat.html>`_   
+
+
+ 
+
+
+
+
+
+
+
+
+
+

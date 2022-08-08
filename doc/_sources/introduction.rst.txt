@@ -1,0 +1,22 @@
+Introduction
+------------
+
+
+
+
+
+**Python File Manager Project**
+
+
+
+This is the final project of Strypes Lab 2022 Python course.
+ 
+The objective of this assignment is to create file manager, with a graphical user interface,  that features:
+
+- Copy, Delete and Rename files and folders
+
+- Search functionality
+
+- Changing the Owner, Group, and Permissions
+
+- System information

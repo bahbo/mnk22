@@ -1,0 +1,18 @@
+Structure
+============
+This project tries to implement model-view-presenter design pattern.
+
+ - View module provides the visualization of the data.  
+
+ - Model module is responsible for handling the application logic.
+
+ - Presenter module acts upon the Model and the View. It retrieves data from the Model, and formats it for display in the View.
+
+
+.. toctree::
+   :maxdepth: 3
+
+   model
+   view
+   presenter
+   

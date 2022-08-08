@@ -1,0 +1,2 @@
+psutil==5.9.1
+py_cpuinfo==8.0.0
